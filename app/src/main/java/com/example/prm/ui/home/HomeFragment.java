@@ -3,6 +3,8 @@ package com.example.prm.ui.home;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +35,7 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private VehicleAdapter vehicleAdapter;
     private VehicleApiService vehicleApiService;
+    private BroadcastReceiver refreshReceiver;
     
     @Nullable
     @Override
@@ -51,6 +54,21 @@ public class HomeFragment extends Fragment {
         if (getActivity() != null && getActivity().getIntent().getBooleanExtra("refresh_vehicles", false)) {
             loadUserVehicles();
             getActivity().getIntent().removeExtra("refresh_vehicles"); // Clear flag
+        }
+
+        // Register broadcast to refresh vehicles
+        refreshReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if ("com.example.prm.REFRESH_VEHICLES".equals(intent.getAction())) {
+                    loadUserVehicles();
+                }
+            }
+        };
+        try {
+            requireContext().registerReceiver(refreshReceiver, new IntentFilter("com.example.prm.REFRESH_VEHICLES"));
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to register broadcast receiver", e);
         }
     }
     
@@ -112,51 +130,81 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadUserVehicles() {
-        if (getActivity() == null) return;
-        
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
-        String token = sharedPreferences.getString("token", "");
-        int userId = sharedPreferences.getInt("user_id", 0);
-        
-        if (token.isEmpty() || userId <= 0) {
-            // User not logged in, hide vehicle section
-            binding.vehicleSection.setVisibility(View.GONE);
-            return;
-        }
-        
-        Call<VehicleListResponse> call = vehicleApiService.getCustomerVehicles("Bearer " + token, userId, 1, 10);
+        try {
+            if (getActivity() == null) return;
+            
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
+            String token = sharedPreferences.getString("token", "");
+            int userId = sharedPreferences.getInt("user_id", 0);
+            
+            if (token.isEmpty() || userId <= 0) {
+                // User not logged in, hide vehicle section and show add vehicle card
+                if (binding != null) {
+                    binding.vehicleSection.setVisibility(View.GONE);
+                    binding.addVehicleCard.setVisibility(View.VISIBLE);
+                }
+                return;
+            }
+            
+            // Để BE tự suy ra customerId từ JWT → truyền null
+            Call<VehicleListResponse> call = vehicleApiService.getCustomerVehicles("Bearer " + token, null, 1, 10, "");
         call.enqueue(new Callback<VehicleListResponse>() {
             @Override
             public void onResponse(Call<VehicleListResponse> call, Response<VehicleListResponse> response) {
+                Log.d(TAG, "API Response Code: " + response.code());
                 if (response.isSuccessful() && response.body() != null) {
                     VehicleListResponse vehicleResponse = response.body();
+                    Log.d(TAG, "API Success: " + vehicleResponse.isSuccess());
+                    Log.d(TAG, "API Message: " + vehicleResponse.getMessage());
+                    
+                    if (vehicleResponse.getData() != null) {
+                        Log.d(TAG, "Data exists, vehicles count: " + 
+                            (vehicleResponse.getData().getVehicles() != null ? 
+                             vehicleResponse.getData().getVehicles().size() : "null"));
+                    } else {
+                        Log.d(TAG, "Data is null");
+                    }
+                    
                     if (vehicleResponse.isSuccess() && vehicleResponse.getData() != null && 
                         vehicleResponse.getData().getVehicles() != null && 
                         !vehicleResponse.getData().getVehicles().isEmpty()) {
                         
-                        // Show vehicle section and update adapter
+                        // Show vehicle section and hide add vehicle card
                         binding.vehicleSection.setVisibility(View.VISIBLE);
+                        binding.addVehicleCard.setVisibility(View.GONE);
                         vehicleAdapter.updateVehicles(vehicleResponse.getData().getVehicles());
                         
                         Log.d(TAG, "Loaded " + vehicleResponse.getData().getVehicles().size() + " vehicles");
                     } else {
-                        // No vehicles, hide section
+                        // No vehicles, show add vehicle card and hide vehicle section
                         binding.vehicleSection.setVisibility(View.GONE);
+                        binding.addVehicleCard.setVisibility(View.VISIBLE);
                         Log.d(TAG, "No vehicles found for user");
                     }
                 } else {
-                    // Error loading vehicles
+                    // Error loading vehicles, show add vehicle card
                     binding.vehicleSection.setVisibility(View.GONE);
+                    binding.addVehicleCard.setVisibility(View.VISIBLE);
                     Log.e(TAG, "Failed to load vehicles: " + response.code());
                 }
             }
             
             @Override
             public void onFailure(Call<VehicleListResponse> call, Throwable t) {
-                binding.vehicleSection.setVisibility(View.GONE);
+                if (binding != null) {
+                    binding.vehicleSection.setVisibility(View.GONE);
+                    binding.addVehicleCard.setVisibility(View.VISIBLE);
+                }
                 Log.e(TAG, "Network error loading vehicles", t);
             }
         });
+        } catch (Exception e) {
+            Log.e(TAG, "Error in loadUserVehicles", e);
+            if (binding != null) {
+                binding.vehicleSection.setVisibility(View.GONE);
+                binding.addVehicleCard.setVisibility(View.VISIBLE);
+            }
+        }
     }
     
     private void loadUserInfo() {
@@ -195,6 +243,10 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (refreshReceiver != null) {
+            try { requireContext().unregisterReceiver(refreshReceiver); } catch (Exception ignored) {}
+            refreshReceiver = null;
+        }
         binding = null;
     }
 }

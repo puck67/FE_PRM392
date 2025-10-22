@@ -18,9 +18,10 @@ public interface VehicleApiService {
     @GET("vehicle")
     Call<VehicleListResponse> getCustomerVehicles(
         @Header("Authorization") String authorization,
-        @Query("customerId") int customerId,
+        @Query("customerId") Integer customerId,
         @Query("pageNumber") int pageNumber,
-        @Query("pageSize") int pageSize
+        @Query("pageSize") int pageSize,
+        @Query("searchTerm") String searchTerm
     );
 
     @POST("vehicle")

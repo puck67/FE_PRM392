@@ -20,7 +20,7 @@ public class ApiClient {
     public static Retrofit getClient() {
         if (retrofit == null) {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
 
             // Trust all certificates for localhost development
             final TrustManager[] trustAllCerts = new TrustManager[] {

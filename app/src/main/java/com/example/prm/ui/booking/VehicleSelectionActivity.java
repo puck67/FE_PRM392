@@ -198,8 +198,9 @@ public class VehicleSelectionActivity extends AppCompatActivity implements Vehic
 
         String token = "Bearer " + sharedPreferences.getString("token", "");
         
+        // Để BE tự suy customerId theo JWT
         Call<VehicleListResponse> call = apiService.getCustomerVehicles(
-            token, currentUserId, 1, 50);
+            token, null, 1, 50, "");
 
         call.enqueue(new Callback<VehicleListResponse>() {
             @Override

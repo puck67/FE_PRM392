@@ -8,13 +8,22 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
-    <!-- EV Service Center Colors -->
-    <color name="primary_color">#FF1976D2</color>
-    <color name="primary_dark">#FF0D47A1</color>
-    <color name="primary_light">#E3F2FD</color>
-    <color name="accent_color">#FF4CAF50</color>
-    <color name="background_color">#FFF5F5F5</color>
-    <color name="error_color">#FFF44336</color>
-    <color name="warning_color">#FFFF9800</color>
-    <color name="success_color">#FF4CAF50</color>
+    <!-- EV Service Center Colors - Red/White/Black scheme -->
+    <color name="primary_color">#E53E3E</color>
+    <color name="primary_dark">#B91C1C</color>
+    <color name="primary_light">#FDECEC</color>
+    <color name="accent_color">#111111</color>
+    <color name="background_color">#0B0B0D</color>
+    <color name="gray_900">#111111</color>
+    <color name="gray_800">#1F2937</color>
+    <color name="gray_700">#374151</color>
+    <color name="gray_600">#4B5563</color>
+    <color name="gray_500">#6B7280</color>
+    <color name="gray_400">#9CA3AF</color>
+    <color name="gray_300">#D1D5DB</color>
+    <color name="gray_200">#E5E7EB</color>
+    <color name="gray_100">#F3F4F6</color>
+    <color name="error_color">#EF4444</color>
+    <color name="warning_color">#F59E0B</color>
+    <color name="success_color">#10B981</color>
 </resources>

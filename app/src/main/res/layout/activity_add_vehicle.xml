@@ -113,12 +113,12 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Last Service Date -->
+                    <!-- Last Service Date (Required) -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:hint="Ngày bảo dưỡng cuối (tùy chọn)">
+                        android:hint="Ngày bảo dưỡng cuối*">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/et_last_service_date"
@@ -132,24 +132,7 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Purchase Date -->
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="24dp"
-                        android:hint="Ngày mua xe (tùy chọn)">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_purchase_date"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="none"
-                            android:focusable="false"
-                            android:clickable="true"
-                            android:maxLines="1"
-                            tools:text="01/01/2020" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
+                    
 
                 </LinearLayout>
 

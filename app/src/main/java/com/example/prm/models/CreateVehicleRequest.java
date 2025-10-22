@@ -21,20 +21,16 @@ public class CreateVehicleRequest {
     @SerializedName("lastServiceDate")
     private String lastServiceDate; // Format: "YYYY-MM-DD" hoặc null
 
-    @SerializedName("purchaseDate")
-    private String purchaseDate; // Format: "YYYY-MM-DD" hoặc null
-
     // Constructors
     public CreateVehicleRequest() {}
 
-    public CreateVehicleRequest(int customerId, String vin, String licensePlate, String color, int currentMileage, String lastServiceDate, String purchaseDate) {
+    public CreateVehicleRequest(int customerId, String vin, String licensePlate, String color, int currentMileage, String lastServiceDate) {
         this.customerId = customerId;
         this.vin = vin;
         this.licensePlate = licensePlate;
         this.color = color;
         this.currentMileage = currentMileage;
         this.lastServiceDate = lastServiceDate;
-        this.purchaseDate = purchaseDate;
     }
 
     // Getters and Setters
@@ -56,6 +52,5 @@ public class CreateVehicleRequest {
     public String getLastServiceDate() { return lastServiceDate; }
     public void setLastServiceDate(String lastServiceDate) { this.lastServiceDate = lastServiceDate; }
 
-    public String getPurchaseDate() { return purchaseDate; }
-    public void setPurchaseDate(String purchaseDate) { this.purchaseDate = purchaseDate; }
+    
 }

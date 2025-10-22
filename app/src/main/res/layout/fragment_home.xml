@@ -117,6 +117,7 @@
 
             <!-- Add Vehicle Card -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/addVehicleCard"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 app:cardCornerRadius="12dp"

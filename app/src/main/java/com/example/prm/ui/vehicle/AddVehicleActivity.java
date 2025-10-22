@@ -48,7 +48,7 @@ public class AddVehicleActivity extends AppCompatActivity {
     private TextInputEditText etColor;
     private TextInputEditText etCurrentMileage;
     private TextInputEditText etLastServiceDate;
-    private TextInputEditText etPurchaseDate;
+    
     
     // Buttons
     private Button btnCancel;
@@ -82,7 +82,7 @@ public class AddVehicleActivity extends AppCompatActivity {
         etColor = findViewById(R.id.et_color);
         etCurrentMileage = findViewById(R.id.et_current_mileage);
         etLastServiceDate = findViewById(R.id.et_last_service_date);
-        etPurchaseDate = findViewById(R.id.et_purchase_date);
+        
         
         btnCancel = findViewById(R.id.btn_cancel);
         btnSave = findViewById(R.id.btn_save);
@@ -124,22 +124,7 @@ public class AddVehicleActivity extends AppCompatActivity {
             datePickerDialog.show();
         });
 
-        // Purchase Date picker  
-        etPurchaseDate.setOnClickListener(v -> {
-            Calendar calendar = Calendar.getInstance();
-            DatePickerDialog datePickerDialog = new DatePickerDialog(
-                this,
-                (view, year, month, dayOfMonth) -> {
-                    calendar.set(year, month, dayOfMonth);
-                    etPurchaseDate.setText(displayFormat.format(calendar.getTime()));
-                    etPurchaseDate.setTag(dateFormat.format(calendar.getTime())); // Store API format
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-            );
-            datePickerDialog.show();
-        });
+        
     }
 
 
@@ -171,7 +156,18 @@ public class AddVehicleActivity extends AppCompatActivity {
         String licensePlate = etLicensePlateNumber.getText().toString().trim().toUpperCase();
         
         CreateVehicleRequest request = new CreateVehicleRequest();
-        request.setCustomerId(currentUserId); // Add required customerId
+        // Debug: Log current user ID
+        Log.d(TAG, "Current User ID from SharedPreferences: " + currentUserId);
+        
+        // Set customerId - if 0, let backend determine from JWT token
+        if (currentUserId > 0) {
+            request.setCustomerId(currentUserId);
+        } else {
+            // If user ID is 0, set to 0 and let backend handle it
+            request.setCustomerId(0);
+            Log.w(TAG, "User ID is 0, backend will determine from JWT token");
+        }
+        
         request.setVin(vinNumber);
         request.setLicensePlate(licensePlate);
         request.setColor(etColor.getText().toString().trim());
@@ -184,11 +180,23 @@ public class AddVehicleActivity extends AppCompatActivity {
         // Get dates from pickers (stored in tag as yyyy-MM-dd format)
         String lastServiceDate = etLastServiceDate.getTag() != null ? 
             etLastServiceDate.getTag().toString() : null;
-        String purchaseDate = etPurchaseDate.getTag() != null ? 
-            etPurchaseDate.getTag().toString() : null;
-            
-        request.setLastServiceDate(lastServiceDate);
-        request.setPurchaseDate(purchaseDate);
+        
+        // Only set lastServiceDate if it's not empty
+        if (lastServiceDate != null && !lastServiceDate.trim().isEmpty()) {
+            request.setLastServiceDate(lastServiceDate);
+        } else {
+            request.setLastServiceDate(null); // Explicitly set to null
+        }
+        
+
+        // Debug: Log request details
+        Log.d(TAG, "Creating vehicle with data:");
+        Log.d(TAG, "CustomerId: " + request.getCustomerId());
+        Log.d(TAG, "VIN: " + request.getVin());
+        Log.d(TAG, "LicensePlate: " + request.getLicensePlate());
+        Log.d(TAG, "Color: " + request.getColor());
+        Log.d(TAG, "CurrentMileage: " + request.getCurrentMileage());
+        Log.d(TAG, "LastServiceDate: " + request.getLastServiceDate());
 
         showLoadingState();
 
@@ -216,8 +224,22 @@ public class AddVehicleActivity extends AppCompatActivity {
                         Toast.makeText(AddVehicleActivity.this, errorMsg, Toast.LENGTH_LONG).show();
                     }
                 } else if (response.code() == 400) {
-                    Toast.makeText(AddVehicleActivity.this, 
-                        "Thông tin xe không hợp lệ", Toast.LENGTH_LONG).show();
+                    // Debug: Log error response details
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorBody = response.errorBody().string();
+                            Log.e(TAG, "400 Error Response: " + errorBody);
+                            Toast.makeText(AddVehicleActivity.this, 
+                                "Lỗi: " + errorBody, Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(AddVehicleActivity.this, 
+                                "Thông tin xe không hợp lệ", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error parsing 400 response", e);
+                        Toast.makeText(AddVehicleActivity.this, 
+                            "Thông tin xe không hợp lệ", Toast.LENGTH_LONG).show();
+                    }
                 } else if (response.code() == 401) {
                     Toast.makeText(AddVehicleActivity.this, 
                         "Phiên đăng nhập đã hết hạn", Toast.LENGTH_SHORT).show();
@@ -306,6 +328,9 @@ public class AddVehicleActivity extends AppCompatActivity {
                 isValid = false;
             }
         }
+
+        // Last Service Date (optional - can be null in database)
+        // No validation needed as it's optional
 
         return isValid;
     }

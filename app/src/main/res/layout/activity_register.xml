@@ -1,14 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- Background image -->
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="24dp">
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_auth_bike"
+        android:contentDescription="auth background" />
+
+    <!-- Gradient overlay for readability -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_auth_gradient" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="24dp"
+            android:layout_margin="16dp">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.08" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.92" />
 
         <!-- Back Button -->
         <ImageView
@@ -26,42 +58,27 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Đăng ký tài khoản My Honda"
-            android:textColor="#000000"
-            android:textSize="18sp"
+            android:text="Đăng ký"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
             android:textStyle="bold"
             android:layout_marginTop="32dp"
             app:layout_constraintTop_toBottomOf="@id/ivBack"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <!-- Logo Layout -->
-        <LinearLayout
-            android:id="@+id/logoLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_marginTop="24dp"
-            app:layout_constraintTop_toBottomOf="@id/tvTitle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <View
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@drawable/honda_logo_bg" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="HONDA"
-                android:textColor="#E53E3E"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.1"
-                android:layout_marginTop="8dp" />
-
-        </LinearLayout>
+        <!-- Translucent glass panel wraps inputs only -->
+        <View
+            android:id="@+id/glassPanel"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_glass_card"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintStart_toStartOf="@id/guide_start"
+            app:layout_constraintEnd_toEndOf="@id/guide_end"
+            app:layout_constraintBottom_toTopOf="@id/btnRegister"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="24dp" />
 
         <!-- Full Name Input -->
         <TextView
@@ -72,15 +89,15 @@
             android:textColor="#000000"
             android:textSize="14sp"
             android:layout_marginTop="32dp"
-            app:layout_constraintTop_toBottomOf="@id/logoLayout"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintStart_toStartOf="@id/guide_start" />
 
         <EditText
             android:id="@+id/etFullName"
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/edit_text_background"
+            android:background="@drawable/bg_input_glass"
             android:hint="Nhập họ và tên của bạn"
             android:textColorHint="#999999"
             android:textColor="#000000"
@@ -89,8 +106,8 @@
             android:paddingEnd="16dp"
             android:inputType="textPersonName"
             app:layout_constraintTop_toBottomOf="@id/fullNameLabel"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintStart_toStartOf="@id/guide_start"
+            app:layout_constraintEnd_toEndOf="@id/guide_end" />
 
         <!-- Email Input -->
         <TextView
@@ -102,14 +119,14 @@
             android:textSize="14sp"
             android:layout_marginTop="16dp"
             app:layout_constraintTop_toBottomOf="@id/etFullName"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="@id/guide_start" />
 
         <EditText
             android:id="@+id/etPhone"
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/edit_text_background"
+            android:background="@drawable/bg_input_glass"
             android:hint="Nhập email của bạn"
             android:textColorHint="#999999"
             android:textColor="#000000"
@@ -118,8 +135,8 @@
             android:paddingEnd="16dp"
             android:inputType="textEmailAddress"
             app:layout_constraintTop_toBottomOf="@id/emailLabel"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintStart_toStartOf="@id/guide_start"
+            app:layout_constraintEnd_toEndOf="@id/guide_end" />
 
         <!-- Phone Number Input -->
         <TextView
@@ -138,7 +155,7 @@
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/edit_text_background"
+            android:background="@drawable/bg_input_glass"
             android:hint="Nhập số điện thoại (0xxxxxxxxx)"
             android:textColorHint="#999999"
             android:textColor="#000000"
@@ -167,12 +184,12 @@
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/edit_text_background"
+            android:background="@drawable/bg_input_glass"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             app:layout_constraintTop_toBottomOf="@id/passwordLabel"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintStart_toStartOf="@id/guide_start"
+            app:layout_constraintEnd_toEndOf="@id/guide_end">
 
             <EditText
                 android:id="@+id/etPassword"
@@ -216,7 +233,7 @@
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/edit_text_background"
+            android:background="@drawable/bg_input_glass"
             android:hint="Nhập lại mật khẩu"
             android:textColorHint="#999999"
             android:textColor="#000000"
@@ -225,8 +242,8 @@
             android:paddingEnd="16dp"
             android:inputType="textPassword"
             app:layout_constraintTop_toBottomOf="@id/confirmPasswordLabel"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintStart_toStartOf="@id/guide_start"
+            app:layout_constraintEnd_toEndOf="@id/guide_end" />
 
         <!-- Password validation rules -->
         <TextView
@@ -250,8 +267,8 @@
             android:lineSpacingExtra="2dp"
             android:layout_marginTop="4dp"
             app:layout_constraintTop_toBottomOf="@id/passwordRulesTitle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintStart_toStartOf="@id/guide_start"
+            app:layout_constraintEnd_toEndOf="@id/guide_end" />
 
         <!-- Terms and Conditions -->
         <LinearLayout
@@ -298,7 +315,7 @@
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_marginTop="24dp"
-            android:background="@drawable/button_primary_background"
+            android:background="@drawable/bg_button_primary"
             android:text="ĐĂNG KÝ"
             android:textColor="@android:color/white"
             android:textSize="16sp"
@@ -332,6 +349,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-</ScrollView>
+    </ScrollView>
+
+</FrameLayout>
