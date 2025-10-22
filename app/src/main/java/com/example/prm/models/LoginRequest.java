@@ -1,20 +1,24 @@
 package com.example.prm.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class LoginRequest {
-    private String emailOrPhone;
+    @SerializedName("email")
+    private String email;
+    @SerializedName("password")
     private String password;
 
-    public LoginRequest(String emailOrPhone, String password) {
-        this.emailOrPhone = emailOrPhone;
+    public LoginRequest(String email, String password) {
+        this.email = email;
         this.password = password;
     }
 
-    public String getEmailOrPhone() {
-        return emailOrPhone;
+    public String getEmail() {
+        return email;
     }
 
-    public void setEmailOrPhone(String emailOrPhone) {
-        this.emailOrPhone = emailOrPhone;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

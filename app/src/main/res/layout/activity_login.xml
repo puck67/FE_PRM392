@@ -43,12 +43,12 @@
 
         </LinearLayout>
 
-        <!-- Email or Phone Input -->
+        <!-- Email Input -->
         <TextView
             android:id="@+id/phoneLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Số điện thoại hoặc Email"
+            android:text="Email"
             android:textColor="#000000"
             android:textSize="16sp"
             android:layout_marginTop="60dp"
@@ -61,7 +61,7 @@
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/edit_text_background"
-            android:hint="Nhập số điện thoại hoặc email"
+            android:hint="Nhập email của bạn"
             android:textColorHint="#999999"
             android:textColor="#000000"
             android:textSize="16sp"

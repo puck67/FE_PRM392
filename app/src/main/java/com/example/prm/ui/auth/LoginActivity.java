@@ -62,15 +62,17 @@ public class LoginActivity extends AppCompatActivity {
     }
     
     private void performLogin() {
-        String emailOrPhone = binding.etPhone.getText().toString().trim();
+        String email = binding.etPhone.getText().toString().trim();
         String password = binding.etPassword.getText().toString().trim();
         
-        if (validateInput(emailOrPhone, password)) {
+        if (validateInput(email, password)) {
             showLoadingState(true);
             
-            LoginRequest loginRequest = new LoginRequest(emailOrPhone, password);
+            java.util.Map<String, String> payload = new java.util.HashMap<>();
+            payload.put("email", email);
+            payload.put("password", password);
             
-            ApiClient.getApiService().login(loginRequest)
+            ApiClient.getApiService().login(payload)
                     .enqueue(new Callback<ApiResponse<LoginResponse>>() {
                         @Override
                         public void onResponse(Call<ApiResponse<LoginResponse>> call, Response<ApiResponse<LoginResponse>> response) {
@@ -100,19 +102,17 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
     
-    private boolean validateInput(String emailOrPhone, String password) {
-        if (emailOrPhone.isEmpty()) {
-            binding.etPhone.setError("Vui lòng nhập số điện thoại hoặc email");
+    private boolean validateInput(String email, String password) {
+        if (email.isEmpty()) {
+            binding.etPhone.setError("Vui lòng nhập email");
             binding.etPhone.requestFocus();
             return false;
         }
         
-        // Kiểm tra xem có phải email hay số điện thoại
-        boolean isEmail = emailOrPhone.contains("@");
-        boolean isPhone = emailOrPhone.matches("^0\\d{9}$");
-        
-        if (!isEmail && !isPhone) {
-            binding.etPhone.setError("Vui lòng nhập email hợp lệ hoặc số điện thoại (0xxxxxxxxx)");
+        // Kiểm tra định dạng email hợp lệ
+        String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        if (!email.matches(emailPattern)) {
+            binding.etPhone.setError("Vui lòng nhập email hợp lệ");
             binding.etPhone.requestFocus();
             return false;
         }
